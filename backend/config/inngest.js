@@ -1,5 +1,5 @@
 import { Inngest } from "inngest";
-import { connectDB } from "./db.js ";
+import { connectDB } from "./db.js";
 import { User } from "../models/User.js";
 
 // Create a client to send and receive events
@@ -31,11 +31,6 @@ const deleteUser = inngest.createFunction(
         await User.deleteOne({ clerkId: id });
         await deleteStreamUser(id.toString());
     }
-
-
-
 )
-
-
 // Create an empty array where we'll export future Inngest functions
 export const functions = [syncUser,deleteUser];
