@@ -1,6 +1,8 @@
 import { Inngest } from "inngest";
 import { connectDB } from "./db.js";
-import { User } from "../src/models/user.model.js";
+import { User } from "../models/user.model.js";
+import {deleteStreamUser, upsertStreamUser } from "./stream.js";
+
 
 // Create a client to send and receive events
 export const inngest = new Inngest({ id: "intellimeet" });
@@ -17,6 +19,11 @@ const syncUser = inngest.createFunction(
             image: image_url
         };
         await User.create(newUser)
+        await upsertStreamUser({
+            id: newUser.clerkId.toString(),
+            name: newUser.name,
+            image: newUser.image,
+        });
     }
 
 
@@ -33,4 +40,4 @@ const deleteUser = inngest.createFunction(
     }
 )
 // Create an empty array where we'll export future Inngest functions
-export const functions = [syncUser,deleteUser];
+export const functions = [syncUser, deleteUser];
