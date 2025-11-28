@@ -54,7 +54,7 @@ export const useStreamChat = () => {
         });
       }
     };
-    initChat();
+    connect();
     return () => {
       if(chatClient) chatClient.disconnectUser();
     };
