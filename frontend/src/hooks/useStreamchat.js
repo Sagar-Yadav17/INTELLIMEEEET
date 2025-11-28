@@ -60,5 +60,5 @@ export const useStreamChat = () => {
     };
   }, [tokenData, user,chatClient]);
 
-  return { chatClient, isLoading:tokenLoading, error: tokenError };
+  return { chatClient, isLoading, error };
 };
