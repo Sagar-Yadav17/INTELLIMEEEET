@@ -1,36 +1,55 @@
-import React from 'react'
+import React from "react";
 import { HashIcon } from "lucide-react";
 
-const CustomChannelPreview = ({ channel, setActiveChannel, activeChannel }) => {
+const CustomChannelPreview = ({
+    channel,
+    setActiveChannel,
+    activeChannel,
+    onDelete,
+}) => {
     const isActive = activeChannel && activeChannel.id === channel.id;
-    const isDM = channel.data.member_count === 2 && channel.data.id.includes("user_");
-
-    if (isDM) return null;
-
     const unreadCount = channel.countUnread();
 
-
+    const handleDelete = (e) => {
+        e.stopPropagation();
+        e.preventDefault();
+        console.log("DELETE CLICKED:", channel.id); // 👈 ADD THIS
+        onDelete(channel.id);
+    };
 
     return (
-        <button
-            onClick={() => setActiveChannel(channel)}
-            className={`str-chat__channel-preview-messenger transition-colors flex items-center w-full text-left px-4 py-2 rounded-lg mb-1 font-medium hover:bg-blue-50/80 min-h-9 ${isActive
-                ? "!bg-black/20 !hover:bg-black/20 border-l-8 border-purple-500 shadow-lg text-blue-900"
-                : ""
+        <div
+            className={`flex items-center justify-between w-full px-4 py-2 rounded-lg mb-1 font-medium relative ${isActive
+                    ? "bg-gray-200 border-l-4 border-purple-500"
+                    : "hover:bg-blue-50"
                 }`}
         >
-            <HashIcon className="w-4 h-4 text-[#9b9b9b] mr-2" />
-            <span className="str-chat__channel-preview-messenger-name flex-1">{channel.data.id}</span>
-            {unreadCount > 0 && (
-                <span className="flex items-center justify-center ml-2 size-4 text-xs rounded-full bg-red-500 ">
-                    {unreadCount}
-                </span>
-            )}
+            {/* LEFT SIDE */}
+            <div
+                onClick={() => setActiveChannel(channel)}
+                className="flex items-center gap-2 flex-1 cursor-pointer pointer-events-auto"
+            >
+                <HashIcon className="w-4 h-4 text-gray-500" />
+                <span className="truncate">{channel.data.id}</span>
 
+                {unreadCount > 0 && (
+                    <span className="ml-2 text-xs bg-red-500 text-white px-1 rounded-full">
+                        {unreadCount}
+                    </span>
+                )}
+            </div>
 
-        </button>
+            {/* DELETE BUTTON (FORCED CLICKABLE) */}
+            <div className="relative z-50 pointer-events-auto">
+                <button
+                    onClick={handleDelete}
+                    className="text-red-500 hover:text-red-700 text-sm px-2 cursor-pointer"
+                >
+                    ❌
+                </button>
+            </div>
+        </div>
+    );
+};
 
-    )
-}
-
-export default CustomChannelPreview
+export default CustomChannelPreview;

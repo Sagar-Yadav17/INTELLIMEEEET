@@ -20,6 +20,7 @@
     "inngest": "^3.40.1",
     "lucide-react": "^0.555.0",
     "mongoose": "^8.16.5",
+    "socket.io": "^4.8.3",
     "stream-chat": "^8.60.0"
   },
   "devDependencies": {

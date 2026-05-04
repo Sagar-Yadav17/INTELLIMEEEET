@@ -5,6 +5,8 @@ import { useUser } from "@clerk/clerk-react";
 import toast from "react-hot-toast";
 
 import { getStreamToken } from "../lib/api";
+import socket from "../lib/socket";
+import Whiteboard from "../components/Whiteboard";
 
 import {
   StreamVideo,
@@ -29,6 +31,14 @@ const CallPage = () => {
   const [call, setCall] = useState(null);
   const [isConnecting, setIsConnecting] = useState(true);
 
+  const [showWhiteboard, setShowWhiteboard] = useState(false);
+
+  useEffect(() => {
+    if (!callId) return;
+    socket.connect();
+    socket.emit("join-room", callId);
+  }, [callId]);
+
   const { data: tokenData } = useQuery({
     queryKey: ["streamToken"],
     queryFn: getStreamToken,
@@ -37,7 +47,7 @@ const CallPage = () => {
 
   useEffect(() => {
     const initCall = async () => {
-      if (!tokenData.token || !user || !callId) return;
+      if (!tokenData?.token || !user || !callId) return;
 
       try {
         const videoClient = new StreamVideoClient({
@@ -56,8 +66,7 @@ const CallPage = () => {
         setClient(videoClient);
         setCall(callInstance);
       } catch (error) {
-        console.log("Error init call:", error);
-        toast.error("Cannot connect to the call.");
+        toast.error("Cannot connect to call");
       } finally {
         setIsConnecting(false);
       }
@@ -67,31 +76,36 @@ const CallPage = () => {
   }, [tokenData, user, callId]);
 
   if (isConnecting || !isLoaded) {
-    return <div className="h-screen flex justify-center items-center">Connecting to call...</div>;
+    return (
+      <div className="h-screen flex justify-center items-center">
+        Connecting...
+      </div>
+    );
   }
 
   return (
-    <div className="h-screen flex flex-col items-center justify-center bg-gray-100">
-      <div className="relative w-full max-w-4xl mx-auto">
-        {client && call ? (
-          <StreamVideo client={client}>
-            <StreamCall call={call}>
-              <CallContent />
-            </StreamCall>
-          </StreamVideo>
-        ) : (
-          <div className="flex items-center justify-center h-full">
-            <p>Could not initialize call. Please refresh or try again later</p>
-          </div>
-        )}
-      </div>
+    <div className="h-screen bg-gray-100">
+      {client && call ? (
+        <StreamVideo client={client}>
+          <StreamCall call={call}>
+            <CallContent
+              callId={callId}
+              showWhiteboard={showWhiteboard}
+              setShowWhiteboard={setShowWhiteboard}
+            />
+          </StreamCall>
+        </StreamVideo>
+      ) : (
+        <div className="flex justify-center items-center h-full">
+          Failed to load call
+        </div>
+      )}
     </div>
   );
 };
 
-const CallContent = () => {
+const CallContent = ({ callId, showWhiteboard, setShowWhiteboard }) => {
   const { useCallCallingState } = useCallStateHooks();
-
   const callingState = useCallCallingState();
   const navigate = useNavigate();
 
@@ -99,8 +113,32 @@ const CallContent = () => {
 
   return (
     <StreamTheme>
-      <SpeakerLayout />
-      <CallControls />
+      <div className="flex h-screen w-full">
+
+        {/* 🎥 VIDEO */}
+        <div className={showWhiteboard ? "w-2/3 h-full" : "w-full h-full"}>
+          <SpeakerLayout />
+
+          {/* Controls + Whiteboard Button */}
+          <div className="flex justify-center items-center gap-3 mt-2">
+            <CallControls />
+
+            <button
+              onClick={() => setShowWhiteboard((prev) => !prev)}
+              className="bg-blue-600 text-white px-3 py-2 rounded-lg"
+            >
+              🖊️
+            </button>
+          </div>
+        </div>
+
+        {/* ✏️ WHITEBOARD */}
+        {showWhiteboard && (
+          <div className="w-1/3 h-full border-l bg-white">
+            <Whiteboard roomId={callId} />
+          </div>
+        )}
+      </div>
     </StreamTheme>
   );
 };
