@@ -26,15 +26,24 @@ export const deleteChannel = async (req, res) => {
   try {
     const { channelId } = req.params;
 
-    await serverClient.deleteChannel("messaging", channelId);
+    // CREATE CHANNEL INSTANCE
+    const channel = serverClient.channel("messaging", channelId);
 
-    res.status(200).json({ message: "Channel deleted successfully" });
+    // DELETE CHANNEL
+    await channel.delete();
+
+    res.status(200).json({
+      success: true,
+      message: "Channel deleted successfully",
+    });
 
   } catch (error) {
     console.log("Error deleting channel:", error);
 
     res.status(500).json({
+      success: false,
       message: "Failed to delete channel",
+      error: error.message,
     });
   }
 };

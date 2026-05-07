@@ -41,31 +41,31 @@ const HomePage = () => {
 
   // ✅ DELETE FUNCTION (FIXED)
   const handleDeleteChannel = async (channelId) => {
-  try {
-    const res = await fetch(`/api/chat/delete-channel/${channelId}`, {
-      method: "DELETE",
-      credentials: "include", // 🔥 VERY IMPORTANT (Clerk auth)
-    });
+    try {
+      const res = await fetch(`http://localhost:5001/api/chat/delete-channel/${channelId}`, {
+        method: "DELETE",
+        credentials: "include", // 🔥 VERY IMPORTANT (Clerk auth)
+      });
 
-    const data = await res.json();
-    console.log("Delete response:", data);
+      const data = await res.json();
+      console.log("Delete response:", data);
 
-    if (res.ok) {
-      alert("Deleted successfully");
+      if (res.ok) {
+        alert("Deleted successfully");
 
-      setActiveChannel(null);
-      setSearchParams({});
-      window.location.reload(); // force refresh
+        setActiveChannel(null);
+        setSearchParams({});
+        window.location.reload(); // force refresh
 
-    } else {
-      alert("Delete failed");
+      } else {
+        alert("Delete failed");
+      }
+
+    } catch (err) {
+      console.error(err);
+      alert("Delete error");
     }
-
-  } catch (err) {
-    console.error(err);
-    alert("Delete error");
-  }
-};
+  };
   if (error) return <p>Something went wrong...</p>;
   if (isLoading || !chatClient) return <PageLoader />;
 
