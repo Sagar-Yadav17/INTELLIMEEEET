@@ -6,7 +6,7 @@
   position: relative;
   display: flex;
   flex-direction: column;
-  background-image: url("/C:/Users/hp/Desktop/INTELIIMEEEET/frontend/public/intellimeetHome.png");
+  background-image: url("/intellimeetHome.png");
   background-size: cover;
   background-position: center;
   font-family: "Poppins", sans-serif;
