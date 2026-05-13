@@ -61,3 +61,27 @@ INTELLIMEEEET/
 │   └── package.json
 │
 └── README.md
+
+
+⚙️ Installation & Setup
+1️⃣ Clone the Repository
+Bash
+git clone https://github.com/Sagar-Yadav17/INTELLIMEEEET.git
+cd INTELLIMEEEET
+2️⃣ Setup Backend
+Bash
+cd backend
+npm install
+Create a .env file inside backend folder
+Environment
+PORT=5000
+MONGO_URI=your_mongodb_connection_string
+JWT_SECRET=your_secret_key
+Run Backend Server
+Bash
+npm start
+3️⃣ Setup Frontend
+Bash
+cd frontend
+npm install
+npm run dev
