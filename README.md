@@ -1,4 +1,4 @@
-Libe link :- https://intellimeeeet-f.vercel.app/auth
+Live link :- https://intellimeeeet-f.vercel.app/auth
 
 A full-stack real-time meeting and collaboration platform built using the MERN stack. IntelliMeet allows users to create meetings, collaborate in real time, manage tasks, and communicate efficiently through a modern web interface.
 
